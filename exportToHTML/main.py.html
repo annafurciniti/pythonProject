@@ -1,0 +1,362 @@
+<html>
+<head>
+<title>main.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+.s3 { color: #808080;}
+.s4 { color: #6897bb;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+main.py</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">random</span>
+<span class="s0">import </span><span class="s1">pygame</span>
+
+<span class="s0">from </span><span class="s1">pip._vendor.distlib.compat </span><span class="s0">import </span><span class="s1">raw_input</span>
+
+<span class="s1">desc = input(</span><span class="s2">'Scegli un numero tra 1(IMPICCATO),2(TRIS) e 3(PING PONG) per iniziare a giocare !'</span><span class="s1">)</span>
+<span class="s0">if </span><span class="s1">desc == </span><span class="s2">'1'</span><span class="s1">:  </span><span class="s3"># GIOCO DELL'IMPICCATO</span>
+    <span class="s0">def </span><span class="s1">carica_parole():  </span><span class="s3"># funzione che mi prende da un file tutte le parole che possono capitare. Il file deve contenere una parola per riga</span>
+        <span class="s1">lista_di_parole = []</span>
+        <span class="s0">with </span><span class="s1">open(</span><span class="s2">'PAROLE.txt'</span><span class="s0">, </span><span class="s2">'r'</span><span class="s1">) </span><span class="s0">as </span><span class="s1">f:</span>
+            <span class="s0">for </span><span class="s1">line </span><span class="s0">in </span><span class="s1">f:</span>
+                <span class="s1">parola = line.rstrip(</span><span class="s2">'</span><span class="s0">\n</span><span class="s2">'</span><span class="s1">)</span>
+                <span class="s1">lista_di_parole.append(parola)</span>
+        <span class="s0">return </span><span class="s1">lista_di_parole</span>
+
+
+    <span class="s0">def </span><span class="s1">parola_random(lista_di_parole):  </span><span class="s3"># funzione che prende a caso una delle parole presenti nel file</span>
+        <span class="s0">return </span><span class="s1">random.choice(lista_di_parole)</span>
+
+
+    <span class="s0">def </span><span class="s1">visualizza_parola(lista_lettere):</span>
+        <span class="s1">print(</span><span class="s2">' '</span><span class="s1">.join(lettera </span><span class="s0">for </span><span class="s1">lettera </span><span class="s0">in </span><span class="s1">lista_lettere))</span>
+
+
+    <span class="s0">def </span><span class="s1">aggiorna_lettere_indovinate(parola</span><span class="s0">, </span><span class="s1">scelta</span><span class="s0">, </span><span class="s1">lettere_indovinate):</span>
+        <span class="s0">for </span><span class="s1">i</span><span class="s0">, </span><span class="s1">lettera </span><span class="s0">in </span><span class="s1">enumerate(parola):</span>
+            <span class="s0">if </span><span class="s1">lettera == scelta:</span>
+                <span class="s1">lettere_indovinate[i] = lettera</span>
+        <span class="s0">return </span><span class="s1">lettere_indovinate</span>
+
+
+    <span class="s0">def </span><span class="s1">show_player_life():</span>
+        <span class="s1">life = </span><span class="s2">&quot;&quot;&quot; 
+    --- 
+    &quot;&quot;&quot;</span>
+        <span class="s0">yield </span><span class="s1">life</span>
+
+        <span class="s1">life = </span><span class="s2">&quot;&quot;&quot; 
+    |---- 
+    | 
+    | 
+    | 
+    | 
+    --- 
+    &quot;&quot;&quot;</span>
+        <span class="s0">yield </span><span class="s1">life</span>
+        <span class="s1">life = </span><span class="s2">&quot;&quot;&quot; 
+    |----0 
+    |    | 
+    |    | 
+    |    | 
+    |    | 
+    --- 
+    &quot;&quot;&quot;</span>
+        <span class="s0">yield </span><span class="s1">life</span>
+
+        <span class="s1">life = </span><span class="s2">&quot;&quot;&quot; 
+    |----O 
+    |    | 
+    |   /|</span><span class="s0">\ 
+    </span><span class="s2">|    | 
+    |    | 
+    --- 
+    &quot;&quot;&quot;</span>
+
+        <span class="s0">yield </span><span class="s1">life</span>
+
+        <span class="s1">life = </span><span class="s2">&quot;&quot;&quot; 
+    |----O 
+    |    | 
+    |   /|</span><span class="s0">\ 
+    </span><span class="s2">|    | 
+    |   /|</span><span class="s0">\ 
+    </span><span class="s2">--- 
+    &quot;&quot;&quot;</span>
+
+        <span class="s0">yield </span><span class="s1">life</span>
+        <span class="s1">life = </span><span class="s2">&quot;&quot;&quot; 
+ 
+    |--</span><span class="s0">\ 
+    </span><span class="s2">|   \O</span>
+    <span class="s2">|    | 
+    |   /|</span><span class="s0">\ 
+    </span><span class="s2">|    | 
+    --- /|</span><span class="s0">\ 
+    </span><span class="s2">&quot;&quot;&quot;</span>
+        <span class="s0">yield </span><span class="s1">life</span>
+
+
+    <span class="s1">lista_di_parole = carica_parole()</span>
+    <span class="s1">parola_da_indovinare = parola_random(lista_di_parole)</span>
+    <span class="s1">lettere_indovinate = [</span><span class="s2">'_' </span><span class="s0">for </span><span class="s1">lettera </span><span class="s0">in </span><span class="s1">parola_da_indovinare]</span>
+    <span class="s1">vita_giocatore = show_player_life()</span>
+
+    <span class="s1">visualizza_parola(lettere_indovinate)</span>
+
+    <span class="s0">while True</span><span class="s1">:</span>
+        <span class="s1">scelta = input(</span><span class="s2">&quot;Inserisci una lettera -&gt; &quot;</span><span class="s1">)</span>
+        <span class="s0">if </span><span class="s1">scelta </span><span class="s0">in </span><span class="s1">parola_da_indovinare:</span>
+            <span class="s1">lettere_indovinate = aggiorna_lettere_indovinate(parola_da_indovinare</span><span class="s0">, </span><span class="s1">scelta</span><span class="s0">, </span><span class="s1">lettere_indovinate)</span>
+            <span class="s0">if </span><span class="s1">parola_da_indovinare == </span><span class="s2">''</span><span class="s1">.join(lettera </span><span class="s0">for </span><span class="s1">lettera </span><span class="s0">in </span><span class="s1">lettere_indovinate):</span>
+                <span class="s1">print(</span><span class="s2">&quot;Hai vinto, complimenti! La parola è: {0}&quot;</span><span class="s1">.format(parola_da_indovinare))</span>
+                <span class="s0">break</span>
+        <span class="s0">else</span><span class="s1">:</span>
+            <span class="s0">try</span><span class="s1">:</span>
+                <span class="s1">print(next(vita_giocatore))</span>
+            <span class="s0">except </span><span class="s1">StopIteration:</span>
+                <span class="s1">print(</span><span class="s2">&quot;Hai perso, la parola era: {0}&quot;</span><span class="s1">.format(parola_da_indovinare))</span>
+                <span class="s0">break</span>
+
+        <span class="s1">visualizza_parola(lettere_indovinate)</span>
+<span class="s0">elif </span><span class="s1">desc == </span><span class="s2">'2'</span><span class="s1">:</span>
+    <span class="s3"># Il programma inizia ponendo tutte le nove variabili uguali a 'x'.</span>
+    <span class="s1">a1 = </span><span class="s2">'x'</span>
+    <span class="s1">a2 = </span><span class="s2">'x'</span>
+    <span class="s1">a3 = </span><span class="s2">'x'</span>
+    <span class="s1">b1 = </span><span class="s2">'x'</span>
+    <span class="s1">b2 = </span><span class="s2">'x'</span>
+    <span class="s1">b3 = </span><span class="s2">'x'</span>
+    <span class="s1">c1 = </span><span class="s2">'x'</span>
+    <span class="s1">c2 = </span><span class="s2">'x'</span>
+    <span class="s1">c3 = </span><span class="s2">'x'</span>
+
+
+    <span class="s3"># Poi visualizza la scacchiera</span>
+    <span class="s0">def </span><span class="s1">scacchiera():</span>
+        <span class="s1">print(</span><span class="s2">'</span><span class="s0">\t </span><span class="s2">1 </span><span class="s0">\t </span><span class="s2">2 </span><span class="s0">\t </span><span class="s2">3 </span><span class="s0">\n</span><span class="s2">'</span><span class="s1">)</span>
+        <span class="s1">print(</span><span class="s2">'a </span><span class="s0">\t</span><span class="s2">'</span><span class="s0">, </span><span class="s1">a1</span><span class="s0">, </span><span class="s2">'</span><span class="s0">\t</span><span class="s2">'</span><span class="s0">, </span><span class="s1">a2</span><span class="s0">, </span><span class="s2">'</span><span class="s0">\t</span><span class="s2">'</span><span class="s0">, </span><span class="s1">a3</span><span class="s0">, </span><span class="s2">'</span><span class="s0">\n</span><span class="s2">'</span><span class="s1">)</span>
+        <span class="s1">print(</span><span class="s2">'b </span><span class="s0">\t</span><span class="s2">'</span><span class="s0">, </span><span class="s1">b1</span><span class="s0">, </span><span class="s2">'</span><span class="s0">\t</span><span class="s2">'</span><span class="s0">, </span><span class="s1">b2</span><span class="s0">, </span><span class="s2">'</span><span class="s0">\t</span><span class="s2">'</span><span class="s0">, </span><span class="s1">b3</span><span class="s0">, </span><span class="s2">'</span><span class="s0">\n</span><span class="s2">'</span><span class="s1">)</span>
+        <span class="s1">print(</span><span class="s2">'c </span><span class="s0">\t</span><span class="s2">'</span><span class="s0">, </span><span class="s1">c1</span><span class="s0">, </span><span class="s2">'</span><span class="s0">\t</span><span class="s2">'</span><span class="s0">, </span><span class="s1">c2</span><span class="s0">, </span><span class="s2">'</span><span class="s0">\t</span><span class="s2">'</span><span class="s0">, </span><span class="s1">c3</span><span class="s0">, </span><span class="s2">'</span><span class="s0">\n</span><span class="s2">'</span><span class="s1">)</span>
+
+
+    <span class="s0">def </span><span class="s1">vittoria(n):</span>
+        <span class="s0">if </span><span class="s1">((a1 == n </span><span class="s0">and </span><span class="s1">a2 == n </span><span class="s0">and </span><span class="s1">a3 == n) </span><span class="s0">or </span><span class="s1">(b1 == n </span><span class="s0">and </span><span class="s1">b2 == n </span><span class="s0">and </span><span class="s1">b3 == n) </span><span class="s0">or</span>
+                <span class="s1">(c1 == n </span><span class="s0">and </span><span class="s1">c2 == n </span><span class="s0">and </span><span class="s1">c3 == n) </span><span class="s0">or</span>
+                <span class="s1">(a1 == n </span><span class="s0">and </span><span class="s1">b1 == n </span><span class="s0">and </span><span class="s1">c1 == n) </span><span class="s0">or </span><span class="s1">(a2 == n </span><span class="s0">and </span><span class="s1">b2 == n </span><span class="s0">and </span><span class="s1">c2 == n) </span><span class="s0">or</span>
+                <span class="s1">(a3 == n </span><span class="s0">and </span><span class="s1">b3 == n </span><span class="s0">and </span><span class="s1">c3 == n) </span><span class="s0">or</span>
+                <span class="s1">(a1 == n </span><span class="s0">and </span><span class="s1">b2 == n </span><span class="s0">and </span><span class="s1">c3 == n) </span><span class="s0">or </span><span class="s1">(a3 == n </span><span class="s0">and </span><span class="s1">b2 == n </span><span class="s0">and </span><span class="s1">c1 == n)):</span>
+            <span class="s1">EsisteVincitore = </span><span class="s2">'si'</span>
+        <span class="s0">else</span><span class="s1">:</span>
+            <span class="s1">EsisteVincitore = </span><span class="s2">'no'</span>
+            <span class="s0">return </span><span class="s1">EsisteVincitore</span>
+
+
+    <span class="s1">scacchiera()</span>
+    <span class="s1">nmosse = </span><span class="s4">0</span>
+    <span class="s1">partitafinita = </span><span class="s2">'no'</span>
+    <span class="s3"># Poi informa che muoverà prima “N”.</span>
+    <span class="s1">print(</span><span class="s2">'Il primo giocatore sarà N </span><span class="s0">\n</span><span class="s2">'</span><span class="s1">)</span>
+    <span class="s1">print(</span><span class="s2">'Muova N </span><span class="s0">\n</span><span class="s2">'</span><span class="s1">)</span>
+    <span class="s1">mossafatta = </span><span class="s2">'no'</span>
+    <span class="s1">x = raw_input(</span><span class="s2">'Dove vuoi scrivere N: a1, a2, a3, b1, b2, b3, c1, c2, c3? </span><span class="s0">\n</span><span class="s2">'</span><span class="s1">)</span>
+    <span class="s0">if </span><span class="s1">x == </span><span class="s2">'a1' </span><span class="s0">and </span><span class="s1">a1 == </span><span class="s2">'x'</span><span class="s1">:</span>
+        <span class="s1">a1 = </span><span class="s2">'N'</span>
+        <span class="s1">mossafatta = </span><span class="s2">'si'</span>
+
+    <span class="s0">while </span><span class="s1">nmosse &lt; </span><span class="s4">9</span><span class="s1">:</span>
+        <span class="s1">print(</span><span class="s2">'Muova N </span><span class="s0">\n</span><span class="s2">'</span><span class="s1">)</span>
+        <span class="s1">mossafatta = </span><span class="s2">'no'</span>
+        <span class="s1">x = raw_input(</span><span class="s2">'Dove vuoi scrivere N: a1, a2, a3, b1, b2, b3, c1, c2, c3 </span><span class="s0">\n</span><span class="s2">'</span><span class="s1">)</span>
+        <span class="s0">if </span><span class="s1">x == </span><span class="s2">'a1' </span><span class="s0">and </span><span class="s1">a1 == </span><span class="s2">'x'</span><span class="s1">:</span>
+            <span class="s1">a1 = </span><span class="s2">'N'</span>
+            <span class="s1">mossafatta = </span><span class="s2">'si'</span>
+        <span class="s0">elif </span><span class="s1">x == </span><span class="s2">'a2' </span><span class="s0">and </span><span class="s1">a2 == </span><span class="s2">'x'</span><span class="s1">:</span>
+            <span class="s1">a2 = </span><span class="s2">'N'</span>
+            <span class="s1">mossafatta = </span><span class="s2">'si'</span>
+        <span class="s0">elif </span><span class="s1">x == </span><span class="s2">'a3' </span><span class="s0">and </span><span class="s1">a3 == </span><span class="s2">'x'</span><span class="s1">:</span>
+            <span class="s1">a3 = </span><span class="s2">'N'</span>
+            <span class="s1">mossafatta = </span><span class="s2">'si'</span>
+        <span class="s0">elif </span><span class="s1">x == </span><span class="s2">'b1' </span><span class="s0">and </span><span class="s1">b1 == </span><span class="s2">'x'</span><span class="s1">:</span>
+            <span class="s1">b1 = </span><span class="s2">'N'</span>
+            <span class="s1">mossafatta = </span><span class="s2">'si'</span>
+        <span class="s0">elif </span><span class="s1">x == </span><span class="s2">'b2' </span><span class="s0">and </span><span class="s1">b2 == </span><span class="s2">'x'</span><span class="s1">:</span>
+            <span class="s1">b2 = </span><span class="s2">'N'</span>
+            <span class="s1">mossafatta = </span><span class="s2">'si'</span>
+        <span class="s0">elif </span><span class="s1">x == </span><span class="s2">'b3' </span><span class="s0">and </span><span class="s1">b3 == </span><span class="s2">'x'</span><span class="s1">:</span>
+            <span class="s1">b3 = </span><span class="s2">'N'</span>
+            <span class="s1">mossafatta = </span><span class="s2">'si'</span>
+        <span class="s0">elif </span><span class="s1">x == </span><span class="s2">'c1' </span><span class="s0">and </span><span class="s1">c1 == </span><span class="s2">'x'</span><span class="s1">:</span>
+            <span class="s1">c1 = </span><span class="s2">'N'</span>
+            <span class="s1">mossafatta = </span><span class="s2">'si'</span>
+        <span class="s0">elif </span><span class="s1">x == </span><span class="s2">'c2' </span><span class="s0">and </span><span class="s1">c2 == </span><span class="s2">'x'</span><span class="s1">:</span>
+            <span class="s1">c2 = </span><span class="s2">'N'</span>
+            <span class="s1">mossafatta = </span><span class="s2">'si'</span>
+        <span class="s0">elif </span><span class="s1">x == </span><span class="s2">'c3' </span><span class="s0">and </span><span class="s1">c3 == </span><span class="s2">'x'</span><span class="s1">:</span>
+            <span class="s1">c3 = </span><span class="s2">'N'</span>
+            <span class="s1">mossafatta = </span><span class="s2">'si'</span>
+
+        <span class="s0">if </span><span class="s1">mossafatta == </span><span class="s2">'no'</span><span class="s1">:</span>
+            <span class="s1">print(</span><span class="s2">'SQUALIFICATO!'</span><span class="s1">)</span>
+            <span class="s1">partitafinita = </span><span class="s2">'si'</span>
+            <span class="s1">nmosse = </span><span class="s4">10</span>
+            <span class="s1">scacchiera()</span>
+            <span class="s1">nmosse = nmosse + </span><span class="s4">1</span>
+            <span class="s1">partitafinita = vittoria(</span><span class="s2">'N'</span><span class="s1">)</span>
+        <span class="s0">if </span><span class="s1">partitafinita == </span><span class="s2">'si'</span><span class="s1">:</span>
+            <span class="s1">print(</span><span class="s2">'Ha vinto N </span><span class="s0">\n</span><span class="s2">'</span><span class="s1">)</span>
+            <span class="s1">nmosse = </span><span class="s4">10</span>
+        <span class="s0">elif </span><span class="s1">nmosse == </span><span class="s4">9</span><span class="s1">:</span>
+            <span class="s1">print(</span><span class="s2">'PAREGGIO'</span><span class="s1">)</span>
+            <span class="s1">nmosse = </span><span class="s4">10</span>
+
+        <span class="s0">if </span><span class="s1">partitafinita == </span><span class="s2">'no' </span><span class="s0">and </span><span class="s1">nmosse &lt; </span><span class="s4">9</span><span class="s1">:</span>
+            <span class="s1">nmosse = nmosse + </span><span class="s4">1</span>
+            <span class="s1">mossafatta = </span><span class="s2">'no'</span>
+            <span class="s1">print(</span><span class="s2">'La mossa tocca a R </span><span class="s0">\n</span><span class="s2">'</span><span class="s1">)</span>
+            <span class="s1">x = raw_input(</span><span class="s2">'Dove vuoi scrivere R: a1, a2, a3, b1, b2, b3, c1, c2, c3? </span><span class="s0">\n</span><span class="s2">'</span><span class="s1">)</span>
+        <span class="s0">if </span><span class="s1">x == </span><span class="s2">'a1' </span><span class="s0">and </span><span class="s1">a1 == </span><span class="s2">'x'</span><span class="s1">:</span>
+            <span class="s1">a1 = </span><span class="s2">'R'</span>
+            <span class="s1">mossafatta = </span><span class="s2">'si'</span>
+        <span class="s0">elif </span><span class="s1">x == </span><span class="s2">'a2' </span><span class="s0">and </span><span class="s1">a2 == </span><span class="s2">'x'</span><span class="s1">:</span>
+            <span class="s1">a2 = </span><span class="s2">'R'</span>
+            <span class="s1">mossafatta = </span><span class="s2">'si'</span>
+        <span class="s0">elif </span><span class="s1">x == </span><span class="s2">'a3' </span><span class="s0">and </span><span class="s1">a3 == </span><span class="s2">'x'</span><span class="s1">:</span>
+            <span class="s1">a3 = </span><span class="s2">'R'</span>
+            <span class="s1">mossafatta = </span><span class="s2">'si'</span>
+        <span class="s0">elif </span><span class="s1">x == </span><span class="s2">'b1' </span><span class="s0">and </span><span class="s1">b1 == </span><span class="s2">'x'</span><span class="s1">:</span>
+            <span class="s1">b1 = </span><span class="s2">'R'</span>
+            <span class="s1">mossafatta = </span><span class="s2">'si'</span>
+        <span class="s0">elif </span><span class="s1">x == </span><span class="s2">'b2' </span><span class="s0">and </span><span class="s1">b2 == </span><span class="s2">'x'</span><span class="s1">:</span>
+            <span class="s1">b2 = </span><span class="s2">'R'</span>
+            <span class="s1">mossafatta = </span><span class="s2">'si'</span>
+        <span class="s0">elif </span><span class="s1">x == </span><span class="s2">'b3' </span><span class="s0">and </span><span class="s1">b3 == </span><span class="s2">'x'</span><span class="s1">:</span>
+            <span class="s1">b3 = </span><span class="s2">'R'</span>
+            <span class="s1">mossafatta = </span><span class="s2">'si'</span>
+        <span class="s0">elif </span><span class="s1">x == </span><span class="s2">'c1' </span><span class="s0">and </span><span class="s1">c1 == </span><span class="s2">'x'</span><span class="s1">:</span>
+            <span class="s1">c1 = </span><span class="s2">'R'</span>
+            <span class="s1">mossafatta = </span><span class="s2">'si'</span>
+        <span class="s0">elif </span><span class="s1">x == </span><span class="s2">'c2' </span><span class="s0">and </span><span class="s1">c2 == </span><span class="s2">'x'</span><span class="s1">:</span>
+            <span class="s1">c2 = </span><span class="s2">'R'</span>
+            <span class="s1">mossafatta = </span><span class="s2">'si'</span>
+        <span class="s0">elif </span><span class="s1">x == </span><span class="s2">'c3' </span><span class="s0">and </span><span class="s1">c3 == </span><span class="s2">'x'</span><span class="s1">:</span>
+            <span class="s1">c3 = </span><span class="s2">'R'</span>
+            <span class="s1">mossafatta = </span><span class="s2">'si'</span>
+        <span class="s0">if </span><span class="s1">mossafatta == </span><span class="s2">'no'</span><span class="s1">:</span>
+            <span class="s1">print(</span><span class="s2">'SQUALIFICATO!'</span><span class="s1">)</span>
+            <span class="s1">partitafinita = </span><span class="s2">'si'</span>
+            <span class="s1">nmosse = </span><span class="s4">10</span>
+            <span class="s1">scacchiera()</span>
+            <span class="s1">partitafinita = vittoria(</span><span class="s2">'R'</span><span class="s1">)</span>
+        <span class="s0">if </span><span class="s1">partitafinita == </span><span class="s2">'si'</span><span class="s1">:</span>
+            <span class="s1">print(</span><span class="s2">'Ha vinto R </span><span class="s0">\n</span><span class="s2">'</span><span class="s1">)</span>
+            <span class="s1">nmosse = </span><span class="s4">10</span>
+
+<span class="s0">elif </span><span class="s1">desc == </span><span class="s2">'3'</span><span class="s1">:</span>
+    <span class="s1">pygame.init()</span>
+    <span class="s1">win = pygame.display.set_mode((</span><span class="s4">750</span><span class="s0">, </span><span class="s4">500</span><span class="s1">))</span>
+    <span class="s1">pygame.display.set_caption(</span><span class="s2">'Ping Pong Game'</span><span class="s1">)</span>
+    <span class="s1">white=(</span><span class="s4">255</span><span class="s0">,</span><span class="s4">255</span><span class="s0">,</span><span class="s4">255</span><span class="s1">)</span>
+    <span class="s1">black=(</span><span class="s4">0</span><span class="s0">,</span><span class="s4">0</span><span class="s0">,</span><span class="s4">0</span><span class="s1">)</span>
+    <span class="s0">class </span><span class="s1">Paddle(pygame.sprite.Sprite):</span>
+        <span class="s0">def </span><span class="s1">__init__(self):</span>
+            <span class="s1">pygame.sprite.Sprite.__init__(self)</span>
+            <span class="s1">self.image=pygame.Surface([</span><span class="s4">10</span><span class="s0">, </span><span class="s4">75</span><span class="s1">])</span>
+            <span class="s1">self.image.fill(white)</span>
+            <span class="s1">self.rect=self.image.get_rect()</span>
+            <span class="s1">self.points = </span><span class="s4">0</span>
+    <span class="s0">class </span><span class="s1">Ball(pygame.sprite.Sprite):</span>
+        <span class="s0">def </span><span class="s1">__init__(self):</span>
+            <span class="s1">pygame.sprite.Sprite.__init__(self)</span>
+            <span class="s1">self.image = pygame.Surface([</span><span class="s4">10</span><span class="s0">, </span><span class="s4">10</span><span class="s1">])</span>
+            <span class="s1">self.image.fill(white)</span>
+            <span class="s1">self.rect =self.image.get_rect()</span>
+            <span class="s1">self.speed = </span><span class="s4">10</span>
+            <span class="s1">self.dx = </span><span class="s4">1</span>
+            <span class="s1">self.dy = </span><span class="s4">1</span>
+    <span class="s1">paddle1=Paddle()</span><span class="s3">#la class Paddle serve per creare un oggetto paddle1</span>
+    <span class="s1">paddle1.rect.x = </span><span class="s4">25</span>
+    <span class="s1">paddle1.rect.y = </span><span class="s4">225</span>
+    <span class="s1">paddle2 =Paddle()</span><span class="s3">#creo paddle2</span>
+    <span class="s1">paddle_speed = </span><span class="s4">50</span>
+    <span class="s1">paddle1.rect.x = </span><span class="s4">715</span>
+    <span class="s1">paddle1.rect.y = </span><span class="s4">225</span>
+    <span class="s1">pong = Ball()</span><span class="s3">#creo pong con Ball</span>
+    <span class="s1">pong.rect.x = </span><span class="s4">375</span>
+    <span class="s1">pong.rect.y = </span><span class="s4">250</span>
+    <span class="s1">all_sprites = pygame.sprite.Group()</span>
+    <span class="s1">all_sprites.add(paddle1</span><span class="s0">, </span><span class="s1">paddle2</span><span class="s0">, </span><span class="s1">pong)</span>
+    <span class="s0">def </span><span class="s1">redraw():</span><span class="s3">#function</span>
+        <span class="s1">win.fill(black)</span>
+        <span class="s3">#Title font</span>
+        <span class="s1">font = pygame.font.SysFont(</span><span class="s2">'Comic Sans MS'</span><span class="s0">, </span><span class="s4">30</span><span class="s1">)</span>
+        <span class="s1">text = font.render(</span><span class="s2">'PING PONG'</span><span class="s0">, False, </span><span class="s1">white)</span>
+        <span class="s1">textRect = text.get_rect()</span>
+        <span class="s1">textRect.center =(</span><span class="s4">750</span><span class="s1">//</span><span class="s4">2</span><span class="s0">, </span><span class="s4">25</span><span class="s1">)</span>
+        <span class="s1">win.blit(text</span><span class="s0">, </span><span class="s1">textRect)</span>
+        <span class="s3">#Player 1 Score</span>
+        <span class="s1">p1_score = font.render(str(paddle1.points)</span><span class="s0">, False, </span><span class="s1">white)</span><span class="s3">#punto per l'avversario se paddle non prende pong</span>
+        <span class="s1">p1Rect = p1_score.get_rect()</span>
+        <span class="s1">p1Rect.center =(</span><span class="s4">50</span><span class="s0">, </span><span class="s4">50</span><span class="s1">)</span>
+        <span class="s1">win.blit(p1_score</span><span class="s0">, </span><span class="s1">p1Rect)</span>
+        <span class="s3"># Player 2 Score</span>
+        <span class="s1">p2_score = font.render(str(paddle2.points)</span><span class="s0">, False, </span><span class="s1">white)</span>
+        <span class="s1">p2Rect = p2_score.get_rect()</span>
+        <span class="s1">p2Rect.center = (</span><span class="s4">700</span><span class="s0">, </span><span class="s4">50</span><span class="s1">)</span>
+        <span class="s1">win.blit(p2_score</span><span class="s0">, </span><span class="s1">p2Rect)</span>
+        <span class="s1">all_sprites.draw(win)</span>
+        <span class="s1">pygame.display.update()</span>
+    <span class="s1">run=</span><span class="s0">True</span>
+
+    <span class="s0">while </span><span class="s1">run:</span>
+        <span class="s1">pygame.time.delay(</span><span class="s4">100</span><span class="s1">)</span>
+        <span class="s0">for </span><span class="s1">event </span><span class="s0">in </span><span class="s1">pygame.event.get():</span>
+            <span class="s0">if </span><span class="s1">event.type==pygame.QUIT:</span>
+                <span class="s1">run =</span><span class="s0">False</span>
+            <span class="s1">key = pygame.key.get_pressed()  </span><span class="s3"># muovi paddle1 e 2</span>
+            <span class="s0">if </span><span class="s1">key[pygame.K_w]:</span><span class="s3">#destra,w per spostare</span>
+                <span class="s1">paddle1.rect.y += -paddle_speed</span>
+            <span class="s0">if </span><span class="s1">key[pygame.K_s]:</span><span class="s3">#s per spostare</span>
+                <span class="s1">paddle1.rect.y += paddle_speed</span>
+            <span class="s0">if </span><span class="s1">key[pygame.K_r]:  </span><span class="s3">#sinistra,r per spostare</span>
+                <span class="s1">paddle2.rect.y += - paddle_speed</span>
+            <span class="s0">if </span><span class="s1">key[pygame.K_f]:</span><span class="s3">#f per spostare</span>
+                <span class="s1">paddle2.rect.y += paddle_speed</span>
+            <span class="s1">pong.rect.x += pong.speed * pong.dx </span><span class="s3">#per spostare pong</span>
+            <span class="s1">pong.rect.y += pong.speed * pong.dy</span>
+            <span class="s0">if </span><span class="s1">pong.rect.y &gt; </span><span class="s4">490</span><span class="s1">:</span>
+                <span class="s1">pong.dy = -</span><span class="s4">1 </span><span class="s3">#se supera le dimensioni del displaye inverte la direzione</span>
+            <span class="s0">if </span><span class="s1">pong.rect.x &gt; </span><span class="s4">740</span><span class="s1">:</span>
+                <span class="s1">pong.rect.x</span><span class="s0">, </span><span class="s1">pong.rect.y = </span><span class="s4">375</span><span class="s0">, </span><span class="s4">250</span>
+                <span class="s1">pong.dx = -</span><span class="s4">1</span>
+                <span class="s1">paddle1.points += </span><span class="s4">1</span>
+            <span class="s0">if </span><span class="s1">pong.rect.y &lt; </span><span class="s4">10</span><span class="s1">:</span>
+                <span class="s1">pong.dy = </span><span class="s4">1</span>
+            <span class="s0">if </span><span class="s1">pong.rect.x &lt; </span><span class="s4">10</span><span class="s1">:</span>
+                <span class="s1">pong.rect.x</span><span class="s0">, </span><span class="s1">pong.rect.y = </span><span class="s4">375</span><span class="s0">, </span><span class="s4">250</span>
+                <span class="s1">pong.dx = </span><span class="s4">1</span>
+                <span class="s1">paddle2.points += </span><span class="s4">1</span>
+            <span class="s0">if </span><span class="s1">paddle1.rect.colliderect(pong.rect):</span>
+                <span class="s1">pong.dx = </span><span class="s4">1</span>
+
+            <span class="s0">if </span><span class="s1">paddle2.rect.colliderect(pong.rect):</span>
+                <span class="s1">pong.dx = -</span><span class="s4">1</span>
+
+
+            <span class="s1">redraw()</span>
+    <span class="s1">pygame.quit()</span>
+
+
+<span class="s0">if </span><span class="s1">desc != </span><span class="s2">'1' </span><span class="s0">and </span><span class="s1">desc != </span><span class="s2">'2'</span><span class="s0">and </span><span class="s1">desc != </span><span class="s2">'3'</span><span class="s1">:</span>
+    <span class="s1">print(</span><span class="s2">'Gioco non presente.'</span><span class="s1">)</span>
+</pre>
+</body>
+</html>
