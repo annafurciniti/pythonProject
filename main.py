@@ -2,7 +2,7 @@ import random
 import pygame
 #boh
 desc = input('Scegli un numero tra 1(IMPICCATO),2(TRIS) e 3(PING PONG) per iniziare a giocare !')
-
+#CIAO RICCARDOOOOOOOOOOOO
 if desc == '1':  # GIOCO DELL'IMPICCATO
     def carica_parole():
         lista_di_parole = []
