@@ -1,20 +1,19 @@
 import random
 import pygame
 
-from pip._vendor.distlib.compat import raw_input
-
 desc = input('Scegli un numero tra 1(IMPICCATO),2(TRIS) e 3(PING PONG) per iniziare a giocare !')
+
 if desc == '1':  # GIOCO DELL'IMPICCATO
-    def carica_parole():  # funzione che mi prende da un file tutte le parole che possono capitare. Il file deve contenere una parola per riga
+    def carica_parole():
         lista_di_parole = []
-        with open('PAROLE.txt', 'r') as f:
+        with open("PAROLE.txt", 'r') as f:
             for line in f:
                 parola = line.rstrip('\n')
                 lista_di_parole.append(parola)
         return lista_di_parole
 
 
-    def parola_random(lista_di_parole):  # funzione che prende a caso una delle parole presenti nel file
+    def parola_random(lista_di_parole):
         return random.choice(lista_di_parole)
 
 
@@ -109,140 +108,113 @@ if desc == '1':  # GIOCO DELL'IMPICCATO
                 break
 
         visualizza_parola(lettere_indovinate)
-elif desc == '2':
-    # Il programma inizia ponendo tutte le nove variabili uguali a 'x'.
-    a1 = 'x'
-    a2 = 'x'
-    a3 = 'x'
-    b1 = 'x'
-    b2 = 'x'
-    b3 = 'x'
-    c1 = 'x'
-    c2 = 'x'
-    c3 = 'x'
 
 
-    # Poi visualizza la scacchiera
-    def scacchiera():
-        print('\t 1 \t 2 \t 3 \n')
-        print('a \t', a1, '\t', a2, '\t', a3, '\n')
-        print('b \t', b1, '\t', b2, '\t', b3, '\n')
-        print('c \t', c1, '\t', c2, '\t', c3, '\n')
+elif desc == '2':       #TRIS
+    theBoard = {'1': ' ', '2': ' ', '3': ' ',
+                '4': ' ', '5': ' ', '6': ' ',
+                '7': ' ', '8': ' ', '9': ' '}
+
+    board_keys = []
+
+    for key in theBoard:
+        board_keys.append(key)
+
+   #Stampiamo il tabellone aggiornato dopo ogni mossa. Creiamo una funzione in cui definiamo printBoard in modo che stampa il tabellone ogni volta che si chiama la funzione
+
+    def printBoard(board):
+        print(board['1'] + '|' + board['2'] + '|' + board['3'])
+        print('-+-+-')
+        print(board['4'] + '|' + board['5'] + '|' + board['6'])
+        print('-+-+-')
+        print(board['7'] + '|' + board['8'] + '|' + board['9'])
 
 
-    def vittoria(n):
-        if ((a1 == n and a2 == n and a3 == n) or (b1 == n and b2 == n and b3 == n) or
-                (c1 == n and c2 == n and c3 == n) or
-                (a1 == n and b1 == n and c1 == n) or (a2 == n and b2 == n and c2 == n) or
-                (a3 == n and b3 == n and c3 == n) or
-                (a1 == n and b2 == n and c3 == n) or (a3 == n and b2 == n and c1 == n)):
-            EsisteVincitore = 'si'
-        else:
-            EsisteVincitore = 'no'
-            return EsisteVincitore
+  #Ora scriveremo la funzione principale che ha tutte le funzionalità di gioco
+    def game():
+        turn = 'X'
+        count = 0
+
+        for i in range(10):
+            printBoard(theBoard)
+            print("E' il tuo turno," + turn + ".Muovi in una casalla  compresa da 1 a 9 partendo dall'alto?")
+
+            move = input()
+
+            if theBoard[move] == ' ':
+                theBoard[move] = turn
+                count += 1
+            else:
+                print("Ops! Casella già piena.\nMuovi in un altro posto")
+                continue
+
+            # Ora controlleremo se il giocatore X o O ha vinto, per ogni mossa dopo 5 mosse
+            if count >= 5:
+                if theBoard['7'] == theBoard['8'] == theBoard['9'] != ' ':  # across the top
+                    printBoard(theBoard)
+                    print("\nGame Over.\n")
+                    print(" **** " + turn + " VINTO. ****")
+                    break
+                elif theBoard['4'] == theBoard['5'] == theBoard['6'] != ' ':  # across the middle
+                    printBoard(theBoard)
+                    print("\nGame Over.\n")
+                    print(" **** " + turn + " VINTO. ****")
+                    break
+                elif theBoard['1'] == theBoard['2'] == theBoard['3'] != ' ':  # across the bottom
+                    printBoard(theBoard)
+                    print("\nGame Over.\n")
+                    print(" **** " + turn + " VINTO. ****")
+                    break
+                elif theBoard['1'] == theBoard['4'] == theBoard['7'] != ' ':  # down the left side
+                    printBoard(theBoard)
+                    print("\nGame Over.\n")
+                    print(" **** " + turn + " VINTO. ****")
+                    break
+                elif theBoard['2'] == theBoard['5'] == theBoard['8'] != ' ':  # down the middle
+                    printBoard(theBoard)
+                    print("\nGame Over.\n")
+                    print(" **** " + turn + " VINTO. ****")
+                    break
+                elif theBoard['3'] == theBoard['6'] == theBoard['9'] != ' ':  # down the right side
+                    printBoard(theBoard)
+                    print("\nGame Over.\n")
+                    print(" **** " + turn + " VINTO. ****")
+                    break
+                elif theBoard['7'] == theBoard['5'] == theBoard['3'] != ' ':  # diagonal
+                    printBoard(theBoard)
+                    print("\nGame Over.\n")
+                    print(" **** " + turn + " VINTO. ****")
+                    break
+                elif theBoard['1'] == theBoard['5'] == theBoard['9'] != ' ':  # diagonal
+                    printBoard(theBoard)
+                    print("\nGame Over.\n")
+                    print(" **** " + turn + " VINTO. ****")
+                    break
+
+            #Se né X né O vincono e il tabellone è pieno, dichiareremo il risultato come "pareggio".
+            if count == 9:
+                print("\nGame Over.\n")
+                print("PAREGGIO!!")
+
+            # Cambiamo giocatore dopo ogni mossa
+            if turn == 'X':
+                turn = 'O'
+            else:
+                turn = 'X'
+
+        #Ora chiederemo se il giocatore vuole riavviare il gioco o meno
+        restart = input("Vuoi giocare ancora?y/n")
+        if restart == "y" or restart == "Y":
+            for key in board_keys:
+                theBoard[key] = " "
+
+            game()
 
 
-    scacchiera()
-    nmosse = 0
-    partitafinita = 'no'
-    # Poi informa che muoverà prima “N”.
-    print('Il primo giocatore sarà N \n')
-    print('Muova N \n')
-    mossafatta = 'no'
-    x = raw_input('Dove vuoi scrivere N: a1, a2, a3, b1, b2, b3, c1, c2, c3? \n')
-    if x == 'a1' and a1 == 'x':
-        a1 = 'N'
-        mossafatta = 'si'
+    if __name__ == "__main__":
+        game()
 
-    while nmosse < 9:
-        print('Muova N \n')
-        mossafatta = 'no'
-        x = raw_input('Dove vuoi scrivere N: a1, a2, a3, b1, b2, b3, c1, c2, c3 \n')
-        if x == 'a1' and a1 == 'x':
-            a1 = 'N'
-            mossafatta = 'si'
-        elif x == 'a2' and a2 == 'x':
-            a2 = 'N'
-            mossafatta = 'si'
-        elif x == 'a3' and a3 == 'x':
-            a3 = 'N'
-            mossafatta = 'si'
-        elif x == 'b1' and b1 == 'x':
-            b1 = 'N'
-            mossafatta = 'si'
-        elif x == 'b2' and b2 == 'x':
-            b2 = 'N'
-            mossafatta = 'si'
-        elif x == 'b3' and b3 == 'x':
-            b3 = 'N'
-            mossafatta = 'si'
-        elif x == 'c1' and c1 == 'x':
-            c1 = 'N'
-            mossafatta = 'si'
-        elif x == 'c2' and c2 == 'x':
-            c2 = 'N'
-            mossafatta = 'si'
-        elif x == 'c3' and c3 == 'x':
-            c3 = 'N'
-            mossafatta = 'si'
-
-        if mossafatta == 'no':
-            print('SQUALIFICATO!')
-            partitafinita = 'si'
-            nmosse = 10
-            scacchiera()
-            nmosse = nmosse + 1
-            partitafinita = vittoria('N')
-        if partitafinita == 'si':
-            print('Ha vinto N \n')
-            nmosse = 10
-        elif nmosse == 9:
-            print('PAREGGIO')
-            nmosse = 10
-
-        if partitafinita == 'no' and nmosse < 9:
-            nmosse = nmosse + 1
-            mossafatta = 'no'
-            print('La mossa tocca a R \n')
-            x = raw_input('Dove vuoi scrivere R: a1, a2, a3, b1, b2, b3, c1, c2, c3? \n')
-        if x == 'a1' and a1 == 'x':
-            a1 = 'R'
-            mossafatta = 'si'
-        elif x == 'a2' and a2 == 'x':
-            a2 = 'R'
-            mossafatta = 'si'
-        elif x == 'a3' and a3 == 'x':
-            a3 = 'R'
-            mossafatta = 'si'
-        elif x == 'b1' and b1 == 'x':
-            b1 = 'R'
-            mossafatta = 'si'
-        elif x == 'b2' and b2 == 'x':
-            b2 = 'R'
-            mossafatta = 'si'
-        elif x == 'b3' and b3 == 'x':
-            b3 = 'R'
-            mossafatta = 'si'
-        elif x == 'c1' and c1 == 'x':
-            c1 = 'R'
-            mossafatta = 'si'
-        elif x == 'c2' and c2 == 'x':
-            c2 = 'R'
-            mossafatta = 'si'
-        elif x == 'c3' and c3 == 'x':
-            c3 = 'R'
-            mossafatta = 'si'
-        if mossafatta == 'no':
-            print('SQUALIFICATO!')
-            partitafinita = 'si'
-            nmosse = 10
-            scacchiera()
-            partitafinita = vittoria('R')
-        if partitafinita == 'si':
-            print('Ha vinto R \n')
-            nmosse = 10
-
-elif desc == '3':
+elif desc == '3':       # PING PONG
     pygame.init()
     # Window setup
     win = pygame.display.set_mode((750, 500))
@@ -328,7 +300,7 @@ elif desc == '3':
                 run = False
         # Paddle Movement
         key = pygame.key.get_pressed()
-        if key[pygame.K_w]: #muovi paddle destra con w per sopa
+        if key[pygame.K_w]: #muovi paddle destra con w per sopra
             paddle1.rect.y += -paddle_speed
         if key[pygame.K_s]: #muovi paddle destra con s per sotto
             paddle1.rect.y += paddle_speed
@@ -360,13 +332,12 @@ elif desc == '3':
             pong.rect.x=0
             pong.rect.y=0
             print("The winner is Player1")
+            pygame.quit()
         if paddle2.points == 3:
            pong.rect.x = 0
            pong.rect.y=0
            print("The winner is Player2")
-
-    pygame.quit()
-
+           pygame.quit()
 
 if desc != '1' and desc != '2'and desc != '3':
     print('Gioco non presente.')
