@@ -1,6 +1,6 @@
 import random
 import pygame
-
+#boh
 desc = input('Scegli un numero tra 1(IMPICCATO),2(TRIS) e 3(PING PONG) per iniziare a giocare !')
 
 if desc == '1':  # GIOCO DELL'IMPICCATO
