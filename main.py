@@ -258,6 +258,8 @@ elif desc == '3':
             self.image.fill(white)
             self.rect = self.image.get_rect()
             self.points = 0
+
+
     class Paddle2(pygame.sprite.Sprite):
         def __init__(self):
             pygame.sprite.Sprite.__init__(self)
@@ -265,6 +267,7 @@ elif desc == '3':
             self.image.fill(white)
             self.rect = self.image.get_rect()
             self.points = 0
+
     class Ball(pygame.sprite.Sprite):
         def __init__(self):
             pygame.sprite.Sprite.__init__(self)
@@ -274,6 +277,7 @@ elif desc == '3':
             self.speed = 10
             self.dx = 1
             self.dy = 1
+
     # Sprite Creation
     paddle1 = Paddle1()
     paddle1.rect.x = 25
@@ -300,18 +304,23 @@ elif desc == '3':
         p1Rect = p1_score.get_rect()
         p1Rect.center = (50, 50)
         win.blit(p1_score, p1Rect)
+
         # Player 2 Score
         p2_score = font.render(str(paddle2.points), False, white)
         p2Rect = p2_score.get_rect()
         p2Rect.center = (700, 50)
         win.blit(p2_score, p2Rect)
+
         # Updates all Sprites
         all_sprites.draw(win)
         # Draws updates
         pygame.display.update()
+
+
     run = True
 
     while run:
+
         pygame.time.delay(100)
         # Quit Event
         for event in pygame.event.get():
@@ -347,6 +356,15 @@ elif desc == '3':
         if paddle2.rect.colliderect(pong.rect):
             pong.dx = -1
         redraw()
+        if paddle1.points==3 :
+            pong.rect.x=0
+            pong.rect.y=0
+            print("The winner is Player1")
+        if paddle2.points == 3:
+           pong.rect.x = 0
+           pong.rect.y=0
+           print("The winner is Player2")
+
     pygame.quit()
 
 
